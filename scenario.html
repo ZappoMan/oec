@@ -1,5 +1,9 @@
 <html>
     <head>
+        <!--
+        <meta name="viewport" content="width=400, initial-scale=1">
+        <meta name="viewport" content="initial-scale=2.3, user-scalable=no" />
+        -->
         <meta name="viewport" content="width=320; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
         <script type="text/javascript">
 
@@ -35,11 +39,11 @@
                 // the simulation will not include traumatic injuries in non-runs, but may
                 // include either traumatic MOI or medical NOI incidents on all other locations
                 var nonRuns = [
-                    "Milwaukee Lodge Cafe",
-                    "Broken Tip Bar",
-                    "rental shop",
-                    "parking lot",
-                    "first aid room",
+                    "the lodge",
+                    "the bar",
+                    "the rental shop",
+                    "the parking lot",
+                    "the first aid room",
                     "the hut"
                 ];
                 var lifts = [
@@ -171,30 +175,38 @@
 
                 // chief complaints related to medical issues
                 var noiCC = [
-                    "difficulty breathing",
-                    "chest pain",
-                    "headache",
+                    "they are having difficulty breathing",
+                    "they are having chest pain",
+                    "they have a headache",
                     "dizziness",
-                    "can't stop shivering",
-                    "feeling sick to stomach",
-                    "pain shooting from chest down arm",
-                    "mouth is itchy",
+                    "they can't stop shivering",
+                    "they feel sick to stomach",
+                    "they have pain shooting from chest down arm",
+                    "their mouth is itchy",
                  ];
 
                 // chief complaints related to trauma and or mechanism of injury
                 var moiCC = [
-                    "difficulty breathing",
-                    "can't move wrist",
-                    "ankle really hurts",
-                    "shoulder hurts",
-                    "elbow hurts",
-                    "arm hurts",
-                    "knee really hurts",
-                    "back hurts",
-                    "neck hurts",
-                    "head hurts",
-                    "chest hurts",
-                    "stomach hurts",
+                    "they are having difficulty breathing",
+                    "they can't move their wrist",
+                    "their ankle really hurts",
+                    "their shoulder hurts",
+                    "their elbow hurts",
+                    "their arm hurts",
+                    "their knee really hurts",
+                    "their back hurts",
+                    "their neck hurts",
+                    "their head hurts",
+                    "their chest hurts",
+                    "their stomach hurts",
+                    "they have a black eye",
+                    "their vision is blurry",
+                    "they have ringing in their ears",
+                    "they have a cut on their hand",
+                    "they have a cut on their face",
+                    "they bit their tongue",
+                    "they jammed their finger",
+                    "their hand hurts",
                  ];
 
                 // possible causes of the mechanism of injury
@@ -239,7 +251,7 @@
                     } else if (runs.includes(randomLocation)) {
                         incidentLocation = " on " + randomLocation;
                     } else {
-                        incidentLocation = " at " + randomLocation;
+                        incidentLocation = " in " + randomLocation;
                     }
 
                 } else if (violentMOI) {
@@ -262,11 +274,11 @@
                 // in the event that the chief complaint might relate to breathing difficulties,
                 // give a 50% chance that their position is in the tripod position, or that
                 // they are wheezing.
-                if (chiefComplaint == "difficulty breathing" && !unconscious && (Math.random() < 0.30) ) {
+                if (chiefComplaint == "they are having difficulty breathing" && !unconscious && (Math.random() < 0.30) ) {
                     patientPosition = "hunched over in a tripod position";
                 }
                 var wheezing = false;
-                if (chiefComplaint == "difficulty breathing" && (Math.random() < 0.30) ) {
+                if (chiefComplaint == "they are having difficulty breathing" && (Math.random() < 0.30) ) {
                    wheezing = true;
                 }
 
@@ -333,9 +345,10 @@
         <button onclick="generateScenario()">New Scenario</button>
 
         <h1 id="incident">
-            some content
         </h1>
-        
+
+        <hr/>
+        <h2>Is this patient Sick or Not Sick? Make your call to dispatch.</h2>
         <!--
         <div id="debug" style="visibility:hidden">
             <hr/>
@@ -347,6 +360,6 @@
             <p><b>alteredMentalStatus:</b><span id="alteredMentalStatus"></p>
         </div>
         -->
-        
+        <img src="https://hitcounter.pythonanywhere.com/count/tag.svg" alt="Hits">
     </body>
 </html>

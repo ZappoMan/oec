@@ -1,19 +1,5 @@
 <html>
-    <body>
-        
-        <h1 id="incident">
-            some content
-        </h1>
-        
-        <hr/>
-        <p><b>NOI:</b><span id="noi"/></p>
-        <p><b>violentMOI:</b><span id="violentMOI"/></p>
-        <p><b>unconscious:</b><span id="unconscious"/></p>
-        <p><b>paleSkin:</b><span id="paleSkin"/></p>
-        <p><b>wheezing:</b><span id="wheezing"/></p>
-        <p><b>alteredMentalStatus:</b><span id="alteredMentalStatus"></p>
-
-
+    <head>
         <script type="text/javascript">
 
             // helper function used for many of our random incident parameters
@@ -21,317 +7,345 @@
             function randomItem(items){
                 return items[Math.floor(Math.random()*items.length)];
             }
-
-            // random gender and age
-            var gender = randomItem(["male","female"]);
-            var age = Math.floor(Math.random() * 80);
-
-            // we have this simple age description grouping to handle cases of an unconcious patient
-            // where you won't be able to ask the patient their age. The simulation knows but only
-            // provides a basic description.
-            var ageDescription = "";
-            if (age < 1) {
-                ageDescription = "infant";
-            } else if (age < 8) {
-                ageDescription = "child";
-            } else if (age < 20) {
-                ageDescription = "teenager";
-            } else if (age < 65) {
-                ageDescription = "adult";
-            } else {
-                ageDescription = "elderly adult";
-            }
-
-            // list of possible locations. divided between runs, non-runs, and lifts.
-            // the simulation will not include traumatic injuries in non-runs, but may
-            // include either traumatic MOI or medical NOI incidents on all other locations
-            var nonRuns = [
-                "Milwaukee Lodge Cafe",
-                "Broken Tip Bar",
-                "rental shop",
-                "parking lot",
-                "first aid room",
-                "the hut"
-            ];
-            var lifts = [
-                "East Peak Lift",
-                "Hidden Valley Lift",
-                "Rampart lift"
-            ];
-            var runs = [
-                "east peak",
-                "dino's revenge",
-                "hyak face",
-                "no name",
-                "roz's",
-                "blowdown",
-                "lower blowdown",
-                "sissys run",
-                "sarah's run",
-                "shirley's chute",
-                "rampart",
-                "rampart road",
-                "central park",
-                "new cut",
-                "wolf",
-                "vic's",
-                "chickamin",
-                "kendall",
-                "cutoff",
-                "serpentine",
-                "KJR",
-                "creek run",
-                "milwalkee ridge",
-                "hidden valley",
-                "solitude",
-                "revelation",
-                "squirles forest",
-                "squirles hole",
-                "eclipse",
-                "ultimate"
-            ];
-            var allLocations = [].concat(runs, nonRuns, lifts);
-            var violentLocations = [].concat(runs, lifts);
-
-            // We will determine if it's a trauma or medical incident here.
-            // we have a 60% chance of a mechanism of injury, a 30% chance
-            // of medical issue, and a 10% chance of a violent mechanism of injury
-            // we accomplish this by adjusting the number of times our different
-            // items appears in the random sampling list, we include a
-            function getIncidentType() {
-                return randomItem([
-                        "moi","moi","moi",
-                        "moi","moi","moi",
-                        "noi","noi","noi",
-                        "violent"]);
-            }
-
-            var incidentType = getIncidentType();
-
-            // for the purposes of this simulation, infants and very young children can only have medical emergencies
-            if (age < 3) {
-                incidentType = "noi";
-            }
-
-
-            var noi = incidentType == "noi";
-            var violentMOI = incidentType == "violent";
-
-            // based on the incident type, we will determine if the patient is unconscious
-            var unconscious = false;
-            if (violentMOI) {
-                unconscious = Math.random() < 0.3; // 30% chance of unconscious from violent MOI
-            } else if (noi) {
-                unconscious = Math.random() < 0.1; // 10% chance of unconscious from medical emergency
-            }
         
-            // based on the incident type, we will determine if there are any obvious signs of life threatening bleeding
-            var severeBleeding  = false;
-            if (violentMOI) {
-                severeBleeding = Math.random() < 0.05; // 5% chance of severe bleeding from violent MOI
-            }
-        
-            // based on the incident type, we will determine if the patient has alterned mental status
-            var alteredMentalStatus  = false;
-            if (violentMOI) {
-                alteredMentalStatus = Math.random() < 0.10; // 10% chance of altered mental status from violent MOI
-            } else if (noi) {
-                alteredMentalStatus = Math.random() < 0.05; // 5% chance of altered mental status from medical emergency
-            }
+            function generateScenario() {
 
-            // based on the incident type, we will determine if the patient has alterned mental status
-            var paleSkin  = false;
-            if (violentMOI) {
-                paleSkin = Math.random() < 0.05; // 5% chance of pale skin from violent MOI
-            } else if (noi) {
-                paleSkin = Math.random() < 0.05; // 5% chance of pale skin from medical emergency
-            }
+                // random gender and age
+                var gender = randomItem(["male","female"]);
+                var age = Math.floor(Math.random() * 80);
 
-        
-            // once we know the incident type and if the patient is unconscious, we can
-            // develop a scene description which would include the patient position, and
-            // any other scene clues
-            var unconsciousPositions = [
-                "lying face down",
-                "lying on their back",
-                "lying on their side",
-             ];
-
-             var violentPositions = [
-                 "face down akwardly twisted",
-                 "on their back akwardly twisted",
-                 "on their side akwardly twisted",
-              ];
-
-            var otherPositions = [
-                 "standing",
-                 "sitting",
-              ];
-            var allPositions = [].concat(unconsciousPositions, otherPositions);
-            var allViolentPositions = [].concat(unconsciousPositions, otherPositions, violentPositions);
-
-            var patientPosition = "";
-
-            if (unconscious) {
-                patientPosition = randomItem(unconsciousPositions);
-            } else if (violentMOI) {
-                patientPosition = randomItem(allViolentPositions);
-            } else {
-                patientPosition = randomItem(allPositions);
-            }
-
-            // chief complaints related to medical issues
-            var noiCC = [
-                "difficulty breathing",
-                "chest pain",
-                "headache",
-                "dizziness",
-                "can't stop shivering",
-                "feeling sick to stomach",
-                "pain shooting from chest down arm",
-                "mouth is itchy",
-             ];
-
-            // chief complaints related to trauma and or mechanism of injury
-            var moiCC = [
-                "difficulty breathing",
-                "can't move wrist",
-                "ankle really hurts",
-                "shoulder hurts",
-                "elbow hurts",
-                "arm hurts",
-                "knee really hurts",
-                "back hurts",
-                "neck hurts",
-                "head hurts",
-                "chest hurts",
-                "stomach hurts",
-             ];
-
-            // possible causes of the mechanism of injury
-            var liftRelatedOnsetList = [
-                "they fell off the lift",
-                "they were skiing really fast and hit a pole",
-            ];
-
-            var violentOnsetList = [
-                "they were doing a jump and crashed",
-                "they skied off a cliff",
-            ];
-            var moiOnsetList = [
-                "they were skiing too fast and lost control",
-                "they caught an edge and fell down",
-                "they ran into another skier",
-                "another skier ran into them",
-                "they hit a bump and crashed",
-                "they hit a tree",
-                "it was too steep and they slid and fell",
-            ];
-            var allViolentOnsetList = [].concat(violentOnsetList, moiOnsetList, liftRelatedOnsetList);
-
-            // possible causes of the mechanism of injury
-            var noiOnsetList = [
-                "it just started happening",
-                "they started feeling worse after lunch",
-                "they have been feeling bad all day",
-                "they've been feeling bad a couple days",
-            ];
-
-            var incidentLocation = "";
-            var chiefComplaint = "";
-
-            if (noi) {
-                onset = randomItem(noiOnsetList);
-                chiefComplaint = randomItem(noiCC);
-                var randomLocation = randomItem(allLocations);
-
-                if (lifts.includes(randomLocation)) {
-                    incidentLocation = " at the " + randomItem(["bottom","top"]) + " of " + randomLocation;
-                } else if (runs.includes(randomLocation)) {
-                    incidentLocation = " on " + randomLocation;
-                } else {
-                    incidentLocation = " at " + randomLocation;
-                }
-
-            } else if (violentMOI) {
-                onset = randomItem(allViolentOnsetList);
-                chiefComplaint = randomItem(moiCC);
-                
-                // if the onset was lift related, only select locations that are lifts
-                if (liftRelatedOnsetList.includes(onset)) {
-                    incidentLocation = " under " + randomItem(lifts);
-                } else {
-                    incidentLocation = " on " + randomItem(runs);
-                }
-            } else {
-                onset = randomItem(moiOnsetList);
-                chiefComplaint = randomItem(moiCC);
-                incidentLocation =  " on " + randomItem(runs);
-            }
-
-        
-            // in the event that the chief complaint might relate to breathing difficulties,
-            // give a 50% chance that their position is in the tripod position, or that
-            // they are wheezing.
-            if (chiefComplaint == "difficulty breathing" && !unconscious && (Math.random() < 0.30) ) {
-                patientPosition = "hunched over in a tripod position";
-            }
-            var wheezing = false;
-            if (chiefComplaint == "difficulty breathing" && (Math.random() < 0.30) ) {
-               wheezing = true;
-            }
-
-            // include possible evidence of bleeding
-            if (severeBleeding) {
-                patientPosition += " in what appears to be a pool of blood "
-            }
-
-            // make the location italics
-            //incidentLocation = "<i>"+incidentLocation+"</i>";
-            
-            
-            // This runs while the page loads
-            var incidentText = "";
-            if (unconscious) {
-                incidentText = "You find an unconscious " + ageDescription + " " + gender + " " + patientPosition + incidentLocation;
-            } else {
+                // we have this simple age description grouping to handle cases of an unconcious patient
+                // where you won't be able to ask the patient their age. The simulation knows but only
+                // provides a basic description.
+                var ageDescription = "";
                 if (age < 1) {
-                    incidentText = "You find a " + ageDescription + " ";
+                    ageDescription = "infant";
+                } else if (age < 8) {
+                    ageDescription = "child";
+                } else if (age < 20) {
+                    ageDescription = "teenager";
+                } else if (age < 65) {
+                    ageDescription = "adult";
                 } else {
-                    incidentText = "You find a " + age + " year old ";
+                    ageDescription = "elderly adult";
                 }
-                incidentText += gender + " " + patientPosition  + incidentLocation + " whose chief complaint is " + chiefComplaint;
-            }
-        
-            if (alteredMentalStatus && !unconscious) {
-                incidentText += ", the patient is struggling to focus and answer your questions"
-            }
-            if (paleSkin) {
-                incidentText += ", the patient's skin appears pale"
-            }
-            if (wheezing) {
-                incidentText += ", the patient is wheezing"
-            }
-        
-            // add patient description of what happened.
-            var advocate = "the patient";
 
-            if (age < 6) {
-                advocate = "the patient's parent";
-            } else  if (unconscious) {
-                advocate = "a witness";
+                // list of possible locations. divided between runs, non-runs, and lifts.
+                // the simulation will not include traumatic injuries in non-runs, but may
+                // include either traumatic MOI or medical NOI incidents on all other locations
+                var nonRuns = [
+                    "Milwaukee Lodge Cafe",
+                    "Broken Tip Bar",
+                    "rental shop",
+                    "parking lot",
+                    "first aid room",
+                    "the hut"
+                ];
+                var lifts = [
+                    "East Peak Lift",
+                    "Hidden Valley Lift",
+                    "Rampart lift"
+                ];
+                var runs = [
+                    "east peak",
+                    "dino's revenge",
+                    "hyak face",
+                    "no name",
+                    "roz's",
+                    "blowdown",
+                    "lower blowdown",
+                    "sissys run",
+                    "sarah's run",
+                    "shirley's chute",
+                    "rampart",
+                    "rampart road",
+                    "central park",
+                    "new cut",
+                    "wolf",
+                    "vic's",
+                    "chickamin",
+                    "kendall",
+                    "cutoff",
+                    "serpentine",
+                    "KJR",
+                    "creek run",
+                    "milwalkee ridge",
+                    "hidden valley",
+                    "solitude",
+                    "revelation",
+                    "squirles forest",
+                    "squirles hole",
+                    "eclipse",
+                    "ultimate"
+                ];
+                var allLocations = [].concat(runs, nonRuns, lifts);
+                var violentLocations = [].concat(runs, lifts);
+
+                // We will determine if it's a trauma or medical incident here.
+                // we have a 60% chance of a mechanism of injury, a 30% chance
+                // of medical issue, and a 10% chance of a violent mechanism of injury
+                // we accomplish this by adjusting the number of times our different
+                // items appears in the random sampling list, we include a
+                function getIncidentType() {
+                    return randomItem([
+                            "moi","moi","moi",
+                            "moi","moi","moi",
+                            "noi","noi","noi",
+                            "violent"]);
+                }
+
+                var incidentType = getIncidentType();
+
+                // for the purposes of this simulation, infants and very young children can only have medical emergencies
+                if (age < 3) {
+                    incidentType = "noi";
+                }
+
+
+                var noi = incidentType == "noi";
+                var violentMOI = incidentType == "violent";
+
+                // based on the incident type, we will determine if the patient is unconscious
+                var unconscious = false;
+                if (violentMOI) {
+                    unconscious = Math.random() < 0.3; // 30% chance of unconscious from violent MOI
+                } else if (noi) {
+                    unconscious = Math.random() < 0.1; // 10% chance of unconscious from medical emergency
+                }
+            
+                // based on the incident type, we will determine if there are any obvious signs of life threatening bleeding
+                var severeBleeding  = false;
+                if (violentMOI) {
+                    severeBleeding = Math.random() < 0.05; // 5% chance of severe bleeding from violent MOI
+                }
+            
+                // based on the incident type, we will determine if the patient has alterned mental status
+                var alteredMentalStatus  = false;
+                if (violentMOI) {
+                    alteredMentalStatus = Math.random() < 0.10; // 10% chance of altered mental status from violent MOI
+                } else if (noi) {
+                    alteredMentalStatus = Math.random() < 0.05; // 5% chance of altered mental status from medical emergency
+                }
+
+                // based on the incident type, we will determine if the patient has alterned mental status
+                var paleSkin  = false;
+                if (violentMOI) {
+                    paleSkin = Math.random() < 0.05; // 5% chance of pale skin from violent MOI
+                } else if (noi) {
+                    paleSkin = Math.random() < 0.05; // 5% chance of pale skin from medical emergency
+                }
+
+            
+                // once we know the incident type and if the patient is unconscious, we can
+                // develop a scene description which would include the patient position, and
+                // any other scene clues
+                var unconsciousPositions = [
+                    "lying face down",
+                    "lying on their back",
+                    "lying on their side",
+                 ];
+
+                 var violentPositions = [
+                     "face down akwardly twisted",
+                     "on their back akwardly twisted",
+                     "on their side akwardly twisted",
+                  ];
+
+                var otherPositions = [
+                     "standing",
+                     "sitting",
+                  ];
+                var allPositions = [].concat(unconsciousPositions, otherPositions);
+                var allViolentPositions = [].concat(unconsciousPositions, otherPositions, violentPositions);
+
+                var patientPosition = "";
+
+                if (unconscious) {
+                    patientPosition = randomItem(unconsciousPositions);
+                } else if (violentMOI) {
+                    patientPosition = randomItem(allViolentPositions);
+                } else {
+                    patientPosition = randomItem(allPositions);
+                }
+
+                // chief complaints related to medical issues
+                var noiCC = [
+                    "difficulty breathing",
+                    "chest pain",
+                    "headache",
+                    "dizziness",
+                    "can't stop shivering",
+                    "feeling sick to stomach",
+                    "pain shooting from chest down arm",
+                    "mouth is itchy",
+                 ];
+
+                // chief complaints related to trauma and or mechanism of injury
+                var moiCC = [
+                    "difficulty breathing",
+                    "can't move wrist",
+                    "ankle really hurts",
+                    "shoulder hurts",
+                    "elbow hurts",
+                    "arm hurts",
+                    "knee really hurts",
+                    "back hurts",
+                    "neck hurts",
+                    "head hurts",
+                    "chest hurts",
+                    "stomach hurts",
+                 ];
+
+                // possible causes of the mechanism of injury
+                var liftRelatedOnsetList = [
+                    "they fell off the lift",
+                    "they were skiing really fast and hit a pole",
+                ];
+
+                var violentOnsetList = [
+                    "they were doing a jump and crashed",
+                    "they skied off a cliff",
+                ];
+                var moiOnsetList = [
+                    "they were skiing too fast and lost control",
+                    "they caught an edge and fell down",
+                    "they ran into another skier",
+                    "another skier ran into them",
+                    "they hit a bump and crashed",
+                    "they hit a tree",
+                    "it was too steep and they slid and fell",
+                ];
+                var allViolentOnsetList = [].concat(violentOnsetList, moiOnsetList, liftRelatedOnsetList);
+
+                // possible causes of the mechanism of injury
+                var noiOnsetList = [
+                    "it just started happening",
+                    "they started feeling worse after lunch",
+                    "they have been feeling bad all day",
+                    "they've been feeling bad a couple days",
+                ];
+
+                var incidentLocation = "";
+                var chiefComplaint = "";
+
+                if (noi) {
+                    onset = randomItem(noiOnsetList);
+                    chiefComplaint = randomItem(noiCC);
+                    var randomLocation = randomItem(allLocations);
+
+                    if (lifts.includes(randomLocation)) {
+                        incidentLocation = " at the " + randomItem(["bottom","top"]) + " of " + randomLocation;
+                    } else if (runs.includes(randomLocation)) {
+                        incidentLocation = " on " + randomLocation;
+                    } else {
+                        incidentLocation = " at " + randomLocation;
+                    }
+
+                } else if (violentMOI) {
+                    onset = randomItem(allViolentOnsetList);
+                    chiefComplaint = randomItem(moiCC);
+                    
+                    // if the onset was lift related, only select locations that are lifts
+                    if (liftRelatedOnsetList.includes(onset)) {
+                        incidentLocation = " under " + randomItem(lifts);
+                    } else {
+                        incidentLocation = " on " + randomItem(runs);
+                    }
+                } else {
+                    onset = randomItem(moiOnsetList);
+                    chiefComplaint = randomItem(moiCC);
+                    incidentLocation =  " on " + randomItem(runs);
+                }
+
+            
+                // in the event that the chief complaint might relate to breathing difficulties,
+                // give a 50% chance that their position is in the tripod position, or that
+                // they are wheezing.
+                if (chiefComplaint == "difficulty breathing" && !unconscious && (Math.random() < 0.30) ) {
+                    patientPosition = "hunched over in a tripod position";
+                }
+                var wheezing = false;
+                if (chiefComplaint == "difficulty breathing" && (Math.random() < 0.30) ) {
+                   wheezing = true;
+                }
+
+                // include possible evidence of bleeding
+                if (severeBleeding) {
+                    patientPosition += " in what appears to be a pool of blood "
+                }
+
+                // make the location italics
+                //incidentLocation = "<i>"+incidentLocation+"</i>";
+                
+                
+                // This runs while the page loads
+                var incidentText = "";
+                if (unconscious) {
+                    incidentText = "You find an unconscious " + ageDescription + " " + gender + " " + patientPosition + incidentLocation;
+                } else {
+                    if (age < 1) {
+                        incidentText = "You find a " + ageDescription + " ";
+                    } else {
+                        incidentText = "You find a " + age + " year old ";
+                    }
+                    incidentText += gender + " " + patientPosition  + incidentLocation + " whose chief complaint is " + chiefComplaint;
+                }
+            
+                if (alteredMentalStatus && !unconscious) {
+                    incidentText += ", the patient is struggling to focus and answer your questions"
+                }
+                if (paleSkin) {
+                    incidentText += ", the patient's skin appears pale"
+                }
+                if (wheezing) {
+                    incidentText += ", the patient is wheezing"
+                }
+            
+                // add patient description of what happened.
+                var advocate = "the patient";
+
+                if (age < 6) {
+                    advocate = "the patient's parent";
+                } else  if (unconscious) {
+                    advocate = "a witness";
+                }
+                incidentText += ", " + advocate + " says " + onset;
+
+                document.getElementById("incident").innerHTML=incidentText;
+
+                /***
+                // add debug items
+                document.getElementById("noi").innerHTML=noi;
+                document.getElementById("violentMOI").innerHTML=violentMOI;
+                document.getElementById("unconscious").innerHTML=unconscious;
+                document.getElementById("paleSkin").innerHTML=paleSkin;
+                document.getElementById("wheezing").innerHTML=wheezing;alteredMentalStatus
+                document.getElementById("alteredMentalStatus").innerHTML=alteredMentalStatus;
+                ***/
+                return incidentText;
             }
-            incidentText += ", " + advocate + " says " + onset;
-
-            document.getElementById("incident").innerHTML=incidentText;
-
-            document.getElementById("noi").innerHTML=noi;
-            document.getElementById("violentMOI").innerHTML=violentMOI;
-            document.getElementById("unconscious").innerHTML=unconscious;
-            document.getElementById("paleSkin").innerHTML=paleSkin;
-            document.getElementById("wheezing").innerHTML=wheezing;alteredMentalStatus
-            document.getElementById("alteredMentalStatus").innerHTML=alteredMentalStatus;
         </script>
+    </head>
+   
+    <body onload="generateScenario()">
 
+        <button onclick="generateScenario()">New Scenario</button>
+
+        <h1 id="incident">
+            some content
+        </h1>
+        
+        <!--
+        <div id="debug" style="visibility:hidden">
+            <hr/>
+            <p><b>NOI:</b><span id="noi"/></p>
+            <p><b>violentMOI:</b><span id="violentMOI"/></p>
+            <p><b>unconscious:</b><span id="unconscious"/></p>
+            <p><b>paleSkin:</b><span id="paleSkin"/></p>
+            <p><b>wheezing:</b><span id="wheezing"/></p>
+            <p><b>alteredMentalStatus:</b><span id="alteredMentalStatus"></p>
+        </div>
+        -->
+        
     </body>
 </html>

@@ -1,5 +1,30 @@
 <html>
-    <body>
-        <h1>Hello!</h1>
-    </body>
+
+<head>
+    <title>Hello!</title>
+</head>
+
+<body>
+    <script>
+        var ids = [];
+        setInterval(() => {
+            var id = Date.now();
+            var myH1 = document.createElement("h1");
+            myH1.innerHTML = "Hello!";
+            myH1.id = id;
+            myH1.style = "font-size: " + randomNumber(20, 200) + "px; position: absolute; top: " + randomNumber(0, 80) + "%; left: " + randomNumber(0, 80) + "%; color: rgb(" + randomNumber(0, 255) + ", " + randomNumber(0, 255) + ", " + randomNumber(0, 255) + ");";
+            document.body.appendChild(myH1);
+            ids.push(id);
+            if (ids.length >= 40) {
+                var myElement = document.getElementById(ids[0]);
+                myElement.remove();
+                ids.shift(ids);
+            }
+        }, 500);
+        function randomNumber(min, max) {
+            return (Math.floor(Math.random() * (max - min + 1))) + min;
+        }
+    </script>
+</body>
+
 </html>
